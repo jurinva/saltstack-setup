@@ -4,10 +4,33 @@ OS=$(lsb_release -si)
 VER=$(lsb_release -sr)
 PYVER=apt # if python2 then apt or yum else py3
 
+if [ $# -gt 0 ]; then
+  while [[ $# -gt 0 ]]; do
+    key="$1"
+    case $key in
+      -s|--server)
+      ROLE="master"
+      shift # past argument
+      shift # past value
+      ;;
+      -c|--client)
+      ROLE="minion"
+      shift # past argument
+      shift # past value
+      ;;
+      -p|--package)
+      PKG="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    esac
+  done
+fi
 
 function Uinstall() {
   wget -O - https://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest/SALTSTACK-GPG-KEY.pub
   deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main
+  sudo apt update
 }
 
 function Cinstall() {
