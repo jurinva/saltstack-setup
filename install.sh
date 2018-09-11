@@ -27,10 +27,22 @@ if [ $# -gt 0 ]; then
   done
 fi
 
+function role() {
+  case $OS in
+    Ubuntu)
+      sudo apt install salt-$ROLE
+    ;;
+    CentOS)
+      sudo yum install salt-$ROLE
+    ;;
+  esac
+}
+
 function Uinstall() {
   wget -O - https://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest/SALTSTACK-GPG-KEY.pub
   deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main
   sudo apt update
+  role
 }
 
 function Cinstall() {
@@ -40,6 +52,7 @@ function Cinstall() {
   else sudo yum install https://repo.saltstack.com/$PYVER/redhat/salt-py3-repo-latest-2.el$CVER.noarch.rpm
   fi
   sudo yum clean expire-cache
+  role
 }
 
 function main() {
