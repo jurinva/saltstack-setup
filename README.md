@@ -12,7 +12,7 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Utility to migrate svn repository to git.
+Utility to install and setup SaltStack master/minion.
 
 OPTIONS
 -------
