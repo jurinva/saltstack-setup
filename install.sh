@@ -38,6 +38,17 @@ function role() {
   esac
 }
 
+function pkginstall() {
+  case $OS in
+    Ubuntu)
+      sudo apt install salt-$PKG
+    ;;
+    CentOS)
+      sudo yum install salt-$PKG
+    ;;
+  esac
+}
+
 function Uinstall() {
   wget -O - https://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest/SALTSTACK-GPG-KEY.pub
   deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main
@@ -56,14 +67,18 @@ function Cinstall() {
 }
 
 function main() {
-  case $OS in
-    CentOS)
-      Cinstall
-    ;;
-    Ubuntu)
-      Uinstall
-    ;;
-  esac
+  if [ ! -z "$ROLE" ]; then
+    case $OS in
+      CentOS)
+        Cinstall
+      ;;
+      Ubuntu)
+        Uinstall
+      ;;
+    esac
+  else
+    pkginstall
+  fi
 }
 
 main
