@@ -23,6 +23,11 @@ if [ $# -gt 0 ]; then
       shift # past argument
       shift # past value
       ;;
+      -m|--master)
+      MASTER="$2"
+      shift # past argument
+      shift # past value
+      ;;
     esac
   done
 fi
@@ -38,20 +43,25 @@ function role() {
   esac
 }
 
+function setup-minion() {
+  sed -i "s/master: hostname_master/master: $MASTER/" /etc/salt/minion # need to check
+}
+
+
 function pkginstall() {
   case $OS in
     Ubuntu)
-      sudo apt install salt-$PKG
+      sudo apt -y install salt-$PKG
     ;;
     CentOS)
-      sudo yum install salt-$PKG
+      sudo yum -y install salt-$PKG
     ;;
   esac
 }
 
 function Uinstall() {
   wget -O - https://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest/SALTSTACK-GPG-KEY.pub
-  deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main
+  echo "deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main" > /etc/apt/sources.list.d/saltstack.list
   sudo apt update
   role
 }
@@ -59,8 +69,8 @@ function Uinstall() {
 function Cinstall() {
   CVER=$(lsb_release -sr | head -c 1)
   if [ $PYVER == yum ]; then
-    sudo yum install https://repo.saltstack.com/$PYVER/redhat/salt-repo-latest-2.el$CVER.noarch.rpm
-  else sudo yum install https://repo.saltstack.com/$PYVER/redhat/salt-py3-repo-latest-2.el$CVER.noarch.rpm
+    sudo yum -y install https://repo.saltstack.com/$PYVER/redhat/salt-repo-latest-2.el$CVER.noarch.rpm
+  else sudo yum -y install https://repo.saltstack.com/$PYVER/redhat/salt-py3-repo-latest-2.el$CVER.noarch.rpm
   fi
   sudo yum clean expire-cache
   role
