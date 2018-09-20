@@ -2,6 +2,7 @@
 
 OS=$(lsb_release -si)
 VER=$(lsb_release -sr)
+CODENAME=$(lsb_release -sc)
 PYVER=apt # if python2 then apt or yum else py3
 
 if [ $# -gt 0 ]; then
@@ -61,7 +62,7 @@ function pkginstall() {
 
 function Uinstall() {
   wget -O - https://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest/SALTSTACK-GPG-KEY.pub
-  echo "deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $OS main" > /etc/apt/sources.list.d/saltstack.list
+  echo "deb http://repo.saltstack.com/$PYVER/ubuntu/$VER/amd64/latest $CODENAME main" > /etc/apt/sources.list.d/saltstack.list
   sudo apt update
   role
 }
