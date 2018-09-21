@@ -36,10 +36,10 @@ fi
 function role() {
   case $OS in
     Ubuntu)
-      sudo apt install salt-$ROLE
+      sudo apt -y install salt-$ROLE
     ;;
     CentOS)
-      sudo yum install salt-$ROLE
+      sudo yum -y install salt-$ROLE
     ;;
   esac
 }
